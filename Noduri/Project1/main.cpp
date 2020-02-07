@@ -33,7 +33,6 @@ void type2(string filename)
 	{
 		in >> x >> y;
 		a[x][y] = 1;
-		a[y][x] = 1;
 	}
 	in.close();
 }
@@ -58,9 +57,33 @@ void print()
 	}
 }
 
+int gradintern(int x)
+{
+	int k = 0;
+	for (int i = 1; i <= n; i++)
+	{
+		if (a[x][i] == 1)
+			k++;
+	}
+	return k;
+}
+
+int gradextern(int x)
+{
+	int k = 0;
+	for (int i = 1; i <= n; i++)
+	{
+		if (a[i][x] == 1)
+			k++;
+	}
+	return k;
+}
+
+
 int main()
 {
 	read("mat_lat.txt", "muchii");
 	print();
+	cout << gradextern(4);
 	return 0;
 }
