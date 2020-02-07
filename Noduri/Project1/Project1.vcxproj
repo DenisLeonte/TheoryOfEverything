@@ -21,6 +21,10 @@
   <ItemGroup>
     <ClCompile Include="main.cpp" />
   </ItemGroup>
+  <ItemGroup>
+    <Text Include="mat_ad.txt" />
+    <Text Include="mat_lat.txt" />
+  </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
     <ProjectGuid>{317A885A-2BBD-4D9E-B8E1-DBFE3B1EB364}</ProjectGuid>
