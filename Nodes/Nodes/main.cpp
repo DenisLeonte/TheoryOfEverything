@@ -113,12 +113,24 @@ void profitTotal()
 	}
 }
 
+void profitPeMagazin()
+{
+	cout << "Lista cu profitele pe magazin :" << endl;
+	nod* p = prim;
+	while (p != NULL)
+	{
+		cout << p->x.name << " " << p->x.cost*p->x.storeStock << endl;
+		p = p->urm;
+	}
+}
+
 int main()
 {
 	creare();
-	//ASort();
-	//profit();
-	//unReleased();
+	ASort();
+	profit();
+	unReleased();
 	profitTotal();
+	profitPeMagazin();
 	return 0;
 }
