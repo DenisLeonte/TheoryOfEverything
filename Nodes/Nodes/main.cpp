@@ -8,6 +8,7 @@ using namespace std;
 
 struct produs
 {
+	int nrCrt;
 	string name;
 	float cost;
 	float mkCost;
@@ -25,9 +26,12 @@ void creare()
 {
 	ifstream in("data.in");
 	produs y;
+	int a= 1;
 	while (in >> y.name >> y.cost >> y.mkCost >> y.depStock >> y.storeStock)
 	{
 		nod* nou = new nod;
+		y.nrCrt = a;
+		a++;
 		nou->x = y;
 		nou->urm = NULL;
 		if (prim == NULL)
@@ -49,7 +53,7 @@ void nMatch(string x)
 	{
 		if (p->x.name == x)
 		{
-			cout << p->x.name << " " << p->x.cost << " " << p->x.mkCost << " " << p->x.storeStock << " " << p->x.depStock << endl;
+			cout <<p->x.nrCrt << " " << p->x.name << " " << p->x.cost << " " << p->x.mkCost << " " << p->x.storeStock << " " << p->x.depStock << endl;
 		}
 		p = p->urm;
 	}
@@ -78,7 +82,7 @@ void profit()
 	nod* p = prim;
 	while (p != NULL)
 	{
-		cout << p->x.name << " " << p->x.cost - p -> x.mkCost << endl;
+		cout << p->x.nrCrt << " " << p->x.name << " " << p->x.cost - p -> x.mkCost << endl;
 		p = p->urm;
 	}
 }
@@ -91,7 +95,7 @@ void unReleased()
 	{
 		if (p->x.storeStock == 0 && p->x.depStock == 0)
 		{
-			cout << p->x.name << " " << p->x.cost << endl;
+			cout << p->x.nrCrt << " " << p->x.name << " " << p->x.cost << endl;
 		}
 		p = p->urm;
 	}
@@ -108,7 +112,7 @@ void profitTotal()
 	nod* p = prim;
 	while (p != NULL)
 	{
-		cout << p->x.name << " " << ProfitPerProd(p) << endl;
+		cout << p->x.nrCrt << " " << p->x.name << " " << ProfitPerProd(p) << endl;
 		p = p->urm;
 	}
 }
@@ -119,7 +123,7 @@ void profitPeMagazin()
 	nod* p = prim;
 	while (p != NULL)
 	{
-		cout << p->x.name << " " << p->x.cost*p->x.storeStock << endl;
+		cout << p->x.nrCrt << " " << p->x.name << " " << p->x.cost*p->x.storeStock << endl;
 		p = p->urm;
 	}
 }
@@ -128,9 +132,14 @@ int main()
 {
 	creare();
 	ASort();
+	cout << endl;
 	profit();
+	cout << endl;
 	unReleased();
+	cout << endl;
 	profitTotal();
+	cout << endl;
 	profitPeMagazin();
+	cout << endl;
 	return 0;
 }
