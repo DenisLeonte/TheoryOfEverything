@@ -5,7 +5,6 @@
 #include <fstream>
 #include <limits.h>
 #include <string.h>
-#include <iterator>
 
 using namespace std;
 
@@ -129,7 +128,6 @@ vector <galerie> g;
 
 void citire()
 {
-	in >> p;
 	in >> N >> M;
 	for (int i = 1; i <= N; i++)
 	{
@@ -174,7 +172,7 @@ void distMin(point src,int &minX,int &minY,int &Min)
 	}
 }
 
-void f(int x,int y)
+void deleteElement(int x,int y)
 {
 	for (auto it = g.begin(); it != g.end();) {
 		if (it->x1 == x && it->y1 == y) {
@@ -195,19 +193,27 @@ void plimbarePeGalerii()
 	while (!g.empty())
 	{
 		distMin(src1, dest1.x, dest1.y, aux);
-		f(dest1.x, dest1.y);
+		deleteElement(dest1.x, dest1.y);
 		src1 = dest1;
-		out << src1.x << " " << src1.y << endl;
+		out << dest1.x << " " << dest1.y << endl;
 	}
 }
 
 int main()
 {
+	int p;
+	in >> p;
 	citire();
 	int a, b, c;
 	point src = { XC,YC };
-	//distMin(src, a, b, c);
-	//out << a << " " << b << " " << c;
-	plimbarePeGalerii();
+	if(p == 1)
+	{
+		distMin(src, a, b, c);
+		out << a << " " << b << " " << c<<endl;
+	}
+	else
+	{
+		plimbarePeGalerii();
+	}
 	return 0;
 }
