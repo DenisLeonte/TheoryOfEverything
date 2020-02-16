@@ -29,13 +29,13 @@ void creare()
 	int a= 1;
 	while (in >> y.name >> y.cost >> y.mkCost >> y.depStock >> y.storeStock)
 	{
-		nod* nou = new nod;
-		y.nrCrt = a;
-		a++;
-		nou->x = y;
-		nou->urm = NULL;
-		if (prim == NULL)
-		{
+		nod* nou = new nod;	     
+		y.nrCrt = a;		     
+		a++;				     
+		nou->x = y;			     
+		nou->urm = NULL;	     
+		if (prim == NULL)	     
+		{					     
 			prim = ultim = nou;
 		}
 		else
