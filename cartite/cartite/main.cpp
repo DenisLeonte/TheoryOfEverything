@@ -5,6 +5,7 @@
 #include <fstream>
 #include <limits.h>
 #include <string.h>
+#include <iterator>
 
 using namespace std;
 
@@ -173,6 +174,18 @@ void distMin(point src,int &minX,int &minY,int &Min)
 	}
 }
 
+void f(int x,int y)
+{
+	for (auto it = g.begin(); it != g.end();) {
+		if (it->x1 == x && it->y1 == y) {
+			it = g.erase(it);
+		}
+		else {
+			++it;
+		}
+	}
+}
+
 void plimbarePeGalerii()
 {
 	point src1, dest1;
@@ -182,15 +195,9 @@ void plimbarePeGalerii()
 	while (!g.empty())
 	{
 		distMin(src1, dest1.x, dest1.y, aux);
+		f(dest1.x, dest1.y);
 		src1 = dest1;
-		for (auto it : g)
-		{
-			if (it.x1 == dest1.x && it.y1 == dest1.y)
-			{
-
-			}
-		}
-		out << dest1.x << " " << dest1.y << endl;
+		out << src1.x << " " << src1.y << endl;
 	}
 }
 
