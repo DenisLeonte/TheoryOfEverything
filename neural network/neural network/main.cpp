@@ -24,15 +24,65 @@ public:
 	void setOutputVal(double val) { m_outputVal = val; }
 	double getOutputVal(void) const { return m_outputVal; }
 	void feedForward(const Layer &prevLayer);
+	void calcOutputGradients(double targetVal);
+	void calcHiddenGradients(const Layer& nextLayer);
+	void updateInputWeights(Layer& prevLayer);
 
 private:
 	static double randomWeight(void) { return rand() / double(RAND_MAX); }
 	static double transferFunction(double x);
 	static double transferFunctionDerivative(double x);
+	double sumDOW(const Layer& nestLayer) const;
 	double m_outputVal;
 	vector<Connection> m_outputWeights;
 	unsigned m_myIndex;
+	double m_gradient;
+	static double eta; // [0.0 ... 1.0]
+	static double alpha; // [0.0 ... n]
 };
+
+double Neuron::eta = 0.15;
+double Neuron::alpha = 0.5;
+
+void Neuron::updateInputWeights(Layer& prevLayer)
+{
+	for (unsigned n = 0; n < prevLayer.size(); ++n)
+	{
+		Neuron& neuron = prevLayer[n];
+		double oldDeltaWeight = neuron.m_outputWeights[m_myIndex].deltaWeight;
+
+		double newDeltaWeight = eta * neuron.getOutputVal() * m_gradient + alpha * oldDeltaWeight;
+
+		neuron.m_outputWeights[m_myIndex].deltaWeight = newDeltaWeight;
+		neuron.m_outputWeights[m_myIndex].weight += newDeltaWeight;
+	}
+}
+
+double Neuron::sumDOW(const Layer &nextLayer) const
+{
+	double sum = 0.0;
+
+	//Sum the errors of the nodes
+
+	for (unsigned n = 0; n < nextLayer.size()-1; ++n)
+	{
+		sum += m_outputWeights[n].weight * nextLayer[n] * m_gradient;
+	}
+
+	return sum;
+}
+
+void Neuron::calcHiddenGradients(const Layer& nextLayer)
+{
+	double dow = sumDOW(nextLayer);
+	m_gradient = dow * Neuron::transferFunctionDerivative(m_outputVal);
+}
+
+void Neuron::calcOutputGradients(double targetVal)
+{
+	double delta = targetVal - m_outputVal;
+	m_gradient = delta * Neuron::transferFunctionDerivative(m_outputVal);
+}
 
 double Neuron::transferFunction(double x)
 {
@@ -79,13 +129,24 @@ public:
 	Net(const vector <unsigned> &topology);
 	void feedForward(const vector<double>& inputVals);
 	void backProp(const vector<double>& targetVals);
-	void getResults(vector<double>& resultVals) const {};
+	void getResults(vector<double>& resultVals) const;
 private:
 	vector <Layer> m_layers;
 	double m_error;
 	double m_recentAverageError;
 	double m_recentAverageSmoothingFactor;
 };
+
+void Net::getResults(vector<double>& resultVals) const
+{
+	resultVals.clear();
+
+	for (unsigned n = 0; n <= m_layers.back().size(); ++n)
+	{
+		resultVals.push_back(m_layers.back()[n].getOutputVal());
+	}
+}
+
 void Net::backProp(const vector<double>& targetVals) 
 {
 	// Calculate overall error
@@ -114,10 +175,26 @@ void Net::backProp(const vector<double>& targetVals)
 	//Calculate gradients on hidden layers
 	for (unsigned layerNum = m_layers.size() - 2; layerNum > 0; --layerNum)
 	{
+		Layer& hiddenLayer = m_layers[layerNum];
+		Layer& nextLayer = m_layers[layerNum + 1];
 
+		for (unsigned n = 0; n < hiddenLayer.size(); ++n)
+		{
+			hiddenLayer[n].calcHiddenGradients(nextLayer);
+		}
 	}
 
 	//update connection weights
+	for (unsigned layerNum = m_layers.size() - 1; layerNum > 0; --layerNum)
+	{
+		Layer& layer = m_layers[layerNum];
+		Layer& prevLayer = m_layers[layerNum - 1];
+
+		for (unsigned n = 0; n < layer.size(); ++n)
+		{
+			layer[n].updateInputWeights(prevLayer);
+		}
+	}
 }
 void Net::feedForward(const vector<double>& inputVals)
 {
